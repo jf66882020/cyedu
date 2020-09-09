@@ -1,7 +1,8 @@
 package com.cy6688.eduservice.controller;
 
 
-import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cy6688.commonutils.R;
 import com.cy6688.eduservice.entity.EduTeacher;
 import com.cy6688.eduservice.service.EduTeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +27,36 @@ public class EduTeacherController {
 
     //查询讲师表中所有数据
     @GetMapping("/findAll")
-    public List<EduTeacher> findAllTeacher(){
+    public R findAllTeacher(){
         List<EduTeacher> list = eduTeacherService.list(null);
-        return list;
+        return R.ok().data("items",list);
     }
 
     //逻辑删除讲师
     @DeleteMapping("/delete/{id}")
-    public boolean deleteTeacher(@PathVariable("id") String id){
+    public R deleteTeacher(@PathVariable("id") String id){
         boolean flag = eduTeacherService.removeById(id);
-        return flag;
+        if(flag){
+            return R.ok();
+        }else{
+            return R.error();
+        }
+    }
+
+    /** 讲师分页查询
+    *@Author: 俊峰
+    *@param
+    *@return
+    */
+    @GetMapping("/list/page/{current}/{limit}")
+    public R pageList(@PathVariable("current") long current,
+                      @PathVariable("limit") long limit){
+
+        Page<EduTeacher> page = new Page<>(current,limit);
+        eduTeacherService.page(page,null);
+        long total = page.getTotal();
+        List<EduTeacher> records = page.getRecords();
+        return R.ok().data("items",records).data("total",total);
     }
 
 }
