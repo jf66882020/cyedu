@@ -45,6 +45,12 @@
             <scope>provided </scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.cy6688</groupId>
+            <artifactId>common_utils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- redis -->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
