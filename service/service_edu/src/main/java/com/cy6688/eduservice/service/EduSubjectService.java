@@ -32,4 +32,8 @@ public interface EduSubjectService extends IService<EduSubject> {
     *获取课程分类树
     */
     List<SubjectTreeNode> getSubjectTree();
+
+    List<EduSubject> getAllOneSubject();
+
+    List<EduSubject> getSubjectsByParentId(long parent_id);
 }

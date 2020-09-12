@@ -11,6 +11,6 @@ import java.util.List;
 @Data
 public class SubjectTreeNode {
     private String id;
-    private String label;
+    private String title;
     private List<SubjectTreeNode> children;
 }

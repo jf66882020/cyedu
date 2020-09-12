@@ -27,10 +27,10 @@ public class OSSController {
     private OSSService ossService;
 
     @PostMapping("uploadFile")
-    private R uploadFile(MultipartFile multipartFile) throws IOException {
+    private R uploadFile(MultipartFile file) throws IOException {
         String fileFullpath = "";
-        if(multipartFile != null){
-            fileFullpath = ossService.uploadOSSFile(multipartFile);
+        if(file != null){
+            fileFullpath = ossService.uploadOSSFile(file);
         }
 
         if(StringUtils.isNotEmpty(fileFullpath)){

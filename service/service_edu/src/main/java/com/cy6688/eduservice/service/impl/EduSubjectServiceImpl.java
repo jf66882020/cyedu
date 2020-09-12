@@ -1,6 +1,7 @@
 package com.cy6688.eduservice.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cy6688.eduservice.entity.EduSubject;
 import com.cy6688.eduservice.entity.SubjectData;
 import com.cy6688.eduservice.entity.SubjectTreeNode;
@@ -51,17 +52,47 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
         List<SubjectTreeNode> result = new ArrayList<>();
 
         List<EduSubject> eduSubjects = baseMapper.selectList(null);
+        //过滤出所有一级分类
         List<EduSubject> oneLevel = eduSubjects.stream().filter(subject -> "0".equalsIgnoreCase(subject.getParentId())).collect(Collectors.toList());
+        //封装树
         oneLevel.forEach(oneSubject -> {
             List<SubjectTreeNode> tempTwoSubjects = new ArrayList<>();
             List<EduSubject> twoLevelCollect = eduSubjects.stream().filter(subject -> subject.getParentId().equalsIgnoreCase(oneSubject.getId())).collect(Collectors.toList());
             SubjectTreeNode subjectTreeNode = new SubjectTreeNode();
             subjectTreeNode.setId(oneSubject.getId());
-            subjectTreeNode.setLabel(oneSubject.getTitle());
+            subjectTreeNode.setTitle(oneSubject.getTitle());
             subjectTreeNode.setChildren(this.getTwoLevelTree(oneSubject.getId(),eduSubjects));
             result.add(subjectTreeNode);
         });
         return result;
+    }
+
+    /**
+    *@Author: 俊峰
+    *@param
+    *@return
+    *获取所有一级分类
+    */
+    @Override
+    public List<EduSubject> getAllOneSubject() {
+        QueryWrapper<EduSubject> wrapper = new QueryWrapper<>();
+        wrapper.eq("parent_id",0);
+        List<EduSubject> eduSubjects = baseMapper.selectList(wrapper);
+        return eduSubjects;
+    }
+
+    /**
+    *@Author: 俊峰
+    *@param
+    *@return
+    *根据一级分类id，获取所有二级分类
+    */
+    @Override
+    public List<EduSubject> getSubjectsByParentId(long parent_id) {
+        QueryWrapper<EduSubject> wrapper = new QueryWrapper<>();
+        wrapper.eq("parent_id",parent_id);
+        List<EduSubject> eduSubjects = baseMapper.selectList(wrapper);
+        return eduSubjects;
     }
 
     /**
@@ -76,7 +107,7 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
         collect.forEach(subject -> {
             SubjectTreeNode subjectTreeNode = new SubjectTreeNode();
             subjectTreeNode.setId(subject.getId());
-            subjectTreeNode.setLabel(subject.getTitle());
+            subjectTreeNode.setTitle(subject.getTitle());
             result.add(subjectTreeNode);
         });
         return result;
