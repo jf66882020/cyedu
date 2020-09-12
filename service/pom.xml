@@ -11,6 +11,9 @@
 
     <artifactId>service</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>service_osss</module>
+    </modules>
 
     <dependencies>
 <!--        <dependency>-->
