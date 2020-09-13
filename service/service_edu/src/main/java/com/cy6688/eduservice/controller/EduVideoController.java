@@ -62,6 +62,7 @@ public class EduVideoController {
         EduVideo video = videoService.getById(videoId);
         return R.ok().data("item",video);
     }
+
 }
 
 

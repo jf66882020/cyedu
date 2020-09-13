@@ -35,7 +35,7 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
     @Override
     public void addSubject(MultipartFile file) {
         try{
-            EasyExcel.read(file.getInputStream(), SubjectData.class,new SubjectExcelListener(this)).sheet().doRead();
+            EasyExcel.read(file.getInputStream(), SubjectData.class,new SubjectExcelListener(this)).sheet("课程分类").doRead();
         }catch (Exception e){
             e.printStackTrace();
         }
