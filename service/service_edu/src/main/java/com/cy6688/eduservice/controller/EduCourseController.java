@@ -1,6 +1,7 @@
 package com.cy6688.eduservice.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cy6688.commonutils.R;
 import com.cy6688.eduservice.entity.CourseInfoVO;
 import com.cy6688.eduservice.entity.EduCourse;
@@ -70,7 +71,7 @@ public class EduCourseController {
     *@return
     *根据课程id，获取课程发布信息
     */
-    @GetMapping("/get/publishInfo/{courseId}")
+    @GetMapping("get/publishInfo/{courseId}")
     public R getPublishInfo(@PathVariable("courseId") String courseId){
         PublishCourseInfo coursePublishInfo = courseService.getCoursePublishInfo(courseId);
         return R.ok().data("item",coursePublishInfo);
@@ -82,7 +83,7 @@ public class EduCourseController {
     *@return
     *发布课程信息--修改课程状态
     */
-    @PostMapping("/publish/{courseId}")
+    @PostMapping("publish/{courseId}")
     public R publishCourse(@PathVariable("courseId") String courseId){
         EduCourse course = new EduCourse();
         course.setId(courseId);
@@ -101,14 +102,14 @@ public class EduCourseController {
     *@return
     *分页获取课程列表
     */
-    @PostMapping("/list/page/{current}/{limit}")
+    @PostMapping("list/page/{current}/{limit}")
     public R getListWithPage(@RequestBody CourseQuery courseQuery, @PathVariable("current") long current, @PathVariable("limit") long limit){
         List<PublishCourseInfo> list = courseService.getCourseListWithPage(courseQuery,current,limit);
         long total = courseService.getCourseListWithPageSize(courseQuery);
         return R.ok().data("items",list).data("total",total);
     }
 
-    @DeleteMapping("/remove/{courseId}")
+    @DeleteMapping("remove/{courseId}")
     public R removeCourse(@PathVariable("courseId") String courseId){
         boolean flag = courseService.removeCourseById(courseId);
         if(flag){
@@ -116,6 +117,15 @@ public class EduCourseController {
         }else{
             return R.error();
         }
+    }
+
+    @GetMapping("hot")
+    public R hotCourse(){
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("gmt_create");
+        wrapper.last("limit 8");
+        List<EduCourse> list = courseService.list(wrapper);
+        return R.ok().data("items",list);
     }
 
 }

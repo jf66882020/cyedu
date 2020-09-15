@@ -37,12 +37,8 @@ public class EduVideoController {
     //删除小节
     @DeleteMapping("/remove/{videoId}")
     public R remove(@PathVariable("videoId") String videoId){
-        boolean removeStatus = videoService.removeById(videoId);
-        if(removeStatus){
-            return R.ok();
-        }else{
-            return R.error();
-        }
+        R r = videoService.removeVideoWithFastVideo(videoId);
+        return r;
     }
 
     //编辑小节

@@ -8,6 +8,10 @@
         <module>common/service_base</module>
         <module>common/common_utils</module>
         <module>service/service_edu</module>
+        <module>service/service_cms</module>
+        <module>service/service_front</module>
+        <module>service/service_vod</module>
+        <module>service/service_osss</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

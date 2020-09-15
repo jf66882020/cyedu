@@ -4,6 +4,7 @@ package com.cy6688.eduservice.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cy6688.commonutils.R;
+import com.cy6688.eduservice.entity.EduCourse;
 import com.cy6688.eduservice.entity.EduTeacher;
 import com.cy6688.eduservice.entity.TeacherQuery;
 import com.cy6688.eduservice.service.EduTeacherService;
@@ -147,6 +148,15 @@ public class EduTeacherController {
         }else{
             return R.error();
         }
+    }
+
+    @GetMapping("/hot")
+    public R hotTeacher(){
+        QueryWrapper<EduTeacher> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("gmt_create");
+        wrapper.last("limit 4");
+        List<EduTeacher> list = eduTeacherService.list(wrapper);
+        return R.ok().data("items",list);
     }
 
 }

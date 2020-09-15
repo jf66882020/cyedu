@@ -1,7 +1,7 @@
 package com.cy6688.eduservice.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cy6688.eduservice.client.VodClient;
 import com.cy6688.eduservice.entity.*;
 import com.cy6688.eduservice.entity.course.CourseQuery;
 import com.cy6688.eduservice.entity.course.PublishCourseInfo;
@@ -41,6 +41,9 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
     @Autowired
     private EduVideoService videoService;
+
+    @Autowired
+    private VodClient vodClient;
 
     /**
     *@Author: 俊峰
@@ -182,6 +185,15 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
         //4.删除课程描述信息----由于课程信息和描述信息是1v1的关系，所以可以根据课程id直接删除描述信息
         boolean descriptionDeleteStatus = courseDescriptionService.removeById(courseId);
+
+        QueryWrapper<EduVideo> videoQueryWrapper = new QueryWrapper<>();
+        videoQueryWrapper.eq("course_id", courseId);
+        List<EduVideo> videoList = videoService.list(videoQueryWrapper);
+
+        //5.删除fastDFS上的视频
+        videoList.forEach(video -> {
+            vodClient.removeVideo(video.getVideoSourceId());
+        });
 
         boolean transactionDeleteStatus = courseDeleteStatus && chapterDeleteStatus && videoDeleteStatus && descriptionDeleteStatus;
         if(!transactionDeleteStatus){

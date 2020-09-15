@@ -1,6 +1,6 @@
 package com.cy6688.serviceoss.service.impl;
 
-import com.cy6688.serviceoss.OSSConstant;
+import com.cy6688.serviceoss.constant.OSSConstant;
 import com.cy6688.serviceoss.service.OSSService;
 import com.github.tobato.fastdfs.domain.StorePath;
 import com.github.tobato.fastdfs.proto.storage.DownloadByteArray;
