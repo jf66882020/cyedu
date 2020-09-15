@@ -7,6 +7,7 @@ import com.cy6688.commonutils.R;
 import com.cy6688.eduservice.entity.EduCourse;
 import com.cy6688.eduservice.entity.EduTeacher;
 import com.cy6688.eduservice.entity.TeacherQuery;
+import com.cy6688.eduservice.service.EduCourseService;
 import com.cy6688.eduservice.service.EduTeacherService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,6 +33,9 @@ public class EduTeacherController {
 
     @Autowired
     private EduTeacherService eduTeacherService;
+
+    @Autowired
+    private EduCourseService courseService;
 
     //查询讲师表中所有数据
     @GetMapping("/findAll")
@@ -157,6 +162,37 @@ public class EduTeacherController {
         wrapper.last("limit 4");
         List<EduTeacher> list = eduTeacherService.list(wrapper);
         return R.ok().data("items",list);
+    }
+
+    /**
+    *@Author: 俊峰
+    *@param
+    *@return
+    *分页获取前端名师列表
+    */
+    @GetMapping("/list/front/{page}/{limit}")
+    public R frontTeacherList(@PathVariable long page,@PathVariable long limit){
+        Page<EduTeacher> pageTeacher = new Page(page,limit);
+        Map<String, Object> frontTeachers = eduTeacherService.getFrontTeachers(pageTeacher);
+        return R.ok().data(frontTeachers);
+    }
+
+    /**
+    *@Author: 俊峰
+    *@param
+    *@return
+    *根据讲师Id,获取讲师详情和该讲师所讲课程
+    */
+    @GetMapping("/get/front/{teacherId}")
+    public R getTeacherWithCourse(@PathVariable("teacherId") String teacherId){
+        EduTeacher teacher = eduTeacherService.getById(teacherId);
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("view_count");
+        wrapper.eq("teacher_id",teacherId);
+        wrapper.last("limit 4");
+        List<EduCourse> courses = courseService.list(wrapper);
+
+        return R.ok().data("item",teacher).data("items",courses);
     }
 
 }

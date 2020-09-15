@@ -11,6 +11,9 @@
 
     <artifactId>service</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>service_ucenter</module>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

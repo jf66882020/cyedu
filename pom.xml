@@ -12,6 +12,7 @@
         <module>service/service_front</module>
         <module>service/service_vod</module>
         <module>service/service_osss</module>
+        <module>service/service_ucenter</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
