@@ -1,9 +1,13 @@
 package com.cy6688.eduservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cy6688.eduservice.client.VodClient;
 import com.cy6688.eduservice.entity.*;
+import com.cy6688.eduservice.entity.chapter.ChapterNode;
 import com.cy6688.eduservice.entity.course.CourseQuery;
+import com.cy6688.eduservice.entity.course.CourseWebVo;
+import com.cy6688.eduservice.entity.course.FrontCouseQuery;
 import com.cy6688.eduservice.entity.course.PublishCourseInfo;
 import com.cy6688.eduservice.mapper.EduCourseMapper;
 import com.cy6688.eduservice.service.EduChapterService;
@@ -12,6 +16,7 @@ import com.cy6688.eduservice.service.EduCourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cy6688.eduservice.service.EduVideoService;
 import com.cy6688.servicebase.exception.CyException;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -87,7 +92,9 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         BeanUtils.copyProperties(course,result);
 
         EduCourseDescription description = courseDescriptionService.getById(courseId);
-        result.setDescription(description.getDescription());
+        if(description != null){
+            result.setDescription(description.getDescription());
+        }
         return result;
     }
 
@@ -201,5 +208,60 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         }
 
         return transactionDeleteStatus;
+    }
+
+    @Override
+    public Map<String, Object> frontComplexQuery(Page<EduCourse> page, FrontCouseQuery courseQuery) {
+        QueryWrapper<EduCourse> queryWrapper = new QueryWrapper<>();
+        if (!StringUtils.isEmpty(courseQuery.getSubjectParentId())) {
+            queryWrapper.eq("subject_parent_id", courseQuery.getSubjectParentId());
+        }
+
+        if (!StringUtils.isEmpty(courseQuery.getSubjectId())) {
+            queryWrapper.eq("subject_id", courseQuery.getSubjectId());
+        }
+
+        if (!StringUtils.isEmpty(courseQuery.getBuyCountSort())) {
+            queryWrapper.orderByDesc("buy_count");
+        }
+
+        if (!StringUtils.isEmpty(courseQuery.getGmtCreateSort())) {
+            queryWrapper.orderByDesc("gmt_create");
+        }
+
+        if (!StringUtils.isEmpty(courseQuery.getPriceSort())) {
+            queryWrapper.orderByDesc("price");
+        }
+
+        baseMapper.selectPage(page, queryWrapper);
+
+        List<EduCourse> records = page.getRecords();
+        long current = page.getCurrent();
+        long pages = page.getPages();
+        long size = page.getSize();
+        long total = page.getTotal();
+        boolean hasNext = page.hasNext();
+        boolean hasPrevious = page.hasPrevious();
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("items", records);
+        map.put("current", current);
+        map.put("pages", pages);
+        map.put("size", size);
+        map.put("total", total);
+        map.put("hasNext", hasNext);
+        map.put("hasPrevious", hasPrevious);
+
+        return map;
+    }
+
+    @Override
+    public Map<String,Object> getCourseDetailChapterVideo(String courseId) {
+        CourseWebVo courseDetailChapterVidoe = baseMapper.getCourseDetailChapterVidoe(courseId);
+        List<ChapterNode> chapterVideoListByCourseId = chapterService.getChapterVideoListByCourseId(courseId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("courseWeb",courseDetailChapterVidoe);
+        map.put("chapterVideo",chapterVideoListByCourseId);
+        return map;
     }
 }

@@ -49,5 +49,13 @@ public class UcenterMemberController {
         return R.ok().data("item",member);
     }
 
+    @GetMapping("front/info/{memberId}")
+    public UcenterMember getUser(@PathVariable("memberId") String memberId){
+        UcenterMember member = memberService.getUserInfo(memberId);
+        return member;
+    }
+
+
+
 }
 

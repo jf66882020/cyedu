@@ -87,4 +87,19 @@
             </if>
         </where>
     </select>
+
+    <select id="getCourseDetailChapterVidoe" resultType="com.cy6688.eduservice.entity.course.CourseWebVo">
+       SELECT es.id,es.title,es.price,es.cover,es.lesson_num AS lessonNum,es.buy_count AS buyCount,es.view_count AS viewCount,
+               et.name AS teacherName,et.id AS teacherId,et.intro,et.avatar,
+               ecd.description,
+               es1.title AS subjectLevelOne,es1.id AS subjectLevelOneId,
+               es2.title AS subjectLevelTwo,es2.id AS subjectLevelTwoId
+        FROM edu_course es LEFT OUTER JOIN edu_course_description ecd ON es.id = ecd.id
+                        LEFT OUTER JOIN edu_teacher et ON es.teacher_id = et.id
+                        LEFT OUTER JOIN edu_subject es1 ON es.subject_parent_id = es1.id
+                        LEFT OUTER JOIN edu_subject es2 ON es.subject_id = es2.id
+        WHERE es.id=#{courseId}
+    </select>
+
+
 </mapper>

@@ -103,6 +103,8 @@ public class EduChapterServiceImpl extends ServiceImpl<EduChapterMapper, EduChap
             VideoNode node = new VideoNode();
             node.setId(video.getId());
             node.setTitle(video.getTitle());
+            node.setIsFree(video.getIsFree());
+            node.setVideoSourceId(video.getVideoSourceId());
             result.add(node);
         });
         return result;

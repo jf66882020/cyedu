@@ -10,4 +10,6 @@ import lombok.Data;
 public class VideoNode {
     private String id;
     private String title;
+    private int isFree;
+    private String videoSourceId;
 }

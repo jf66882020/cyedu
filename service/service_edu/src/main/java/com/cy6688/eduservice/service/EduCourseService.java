@@ -1,12 +1,16 @@
 package com.cy6688.eduservice.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cy6688.eduservice.entity.CourseInfoVO;
 import com.cy6688.eduservice.entity.EduCourse;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cy6688.eduservice.entity.course.CourseQuery;
+import com.cy6688.eduservice.entity.course.CourseWebVo;
+import com.cy6688.eduservice.entity.course.FrontCouseQuery;
 import com.cy6688.eduservice.entity.course.PublishCourseInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -37,4 +41,8 @@ public interface EduCourseService extends IService<EduCourse> {
     public long getCourseListWithPageSize(CourseQuery courseQuery);
 
     boolean removeCourseById(String courseId);
+
+    Map<String, Object> frontComplexQuery(Page<EduCourse> page, FrontCouseQuery courseQuery);
+
+    Map<String,Object> getCourseDetailChapterVideo(String courseId);
 }

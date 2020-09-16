@@ -2,16 +2,20 @@ package com.cy6688.eduservice.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cy6688.commonutils.R;
 import com.cy6688.eduservice.entity.CourseInfoVO;
 import com.cy6688.eduservice.entity.EduCourse;
 import com.cy6688.eduservice.entity.course.CourseQuery;
+import com.cy6688.eduservice.entity.course.CourseWebVo;
+import com.cy6688.eduservice.entity.course.FrontCouseQuery;
 import com.cy6688.eduservice.entity.course.PublishCourseInfo;
 import com.cy6688.eduservice.service.EduCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -119,6 +123,13 @@ public class EduCourseController {
         }
     }
 
+    /**
+    *@Author: 俊峰
+    *@param
+    *@return
+    *获取热门课程
+     * 用于前端展示
+    */
     @GetMapping("hot")
     public R hotCourse(){
         QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
@@ -126,6 +137,26 @@ public class EduCourseController {
         wrapper.last("limit 8");
         List<EduCourse> list = courseService.list(wrapper);
         return R.ok().data("items",list);
+    }
+
+
+    /**
+    *@Author: 俊峰
+    *@param
+    *@return
+    *前端课程列表页，带分页条件查询
+    */
+    @PostMapping("/list/front/complex/{current}/{limit}")
+    public R getFrontCourseListWithPage(@RequestBody FrontCouseQuery courseQuery, @PathVariable("current") long current, @PathVariable("limit") long limit){
+        Page<EduCourse> page = new Page<>(current,limit);
+        Map<String,Object> map = courseService.frontComplexQuery(page,courseQuery);
+        return R.ok().data(map);
+    }
+
+    @GetMapping("/detail/front/{courseId}")
+    public R getFrontCourseDetail(@PathVariable("courseId") String courseId){
+        Map<String, Object> map = courseService.getCourseDetailChapterVideo(courseId);
+        return R.ok().data(map);
     }
 
 }
